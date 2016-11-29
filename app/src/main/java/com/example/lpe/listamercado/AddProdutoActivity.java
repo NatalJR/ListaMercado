@@ -5,28 +5,25 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 import android.widget.Toast;
 
-import com.example.lpe.listamercado.modelo.ListaProdutos;
+import com.example.lpe.listamercado.dao.ProdutoDAO;
+import com.example.lpe.listamercado.modelo.Produto;
 
-public class AddItemActivity extends AppCompatActivity {
+public class AddProdutoActivity extends AppCompatActivity {
 
-    private AddItemHelper helper;
+
+    private AddProdutoHelper helper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_item);
+        setContentView(R.layout.activity_add_produto);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        helper = new AddItemHelper(this);
 
-        String [] produtos= {"Produto 1", "Produto 2", "Produto 3", "Produto 4", "Produto 5", "Produto 6", "Produto 7", "Produto 8", "Produto 9", "Produto 10", "Produto 11", "Produto 12", "Produto 13"};
-        ListView ListaProdutos = (ListView) findViewById(R.id.add_item_list);
-        ArrayAdapter<String> adapter = new ArrayAdapter <String> (this, android.R.layout.simple_list_item_1, produtos);
-        ListaProdutos.setAdapter(adapter);
+        helper = new AddProdutoHelper(this);
+
     }
 
     @Override
@@ -40,12 +37,18 @@ public class AddItemActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.menu_add_items_ok:
-                Toast.makeText(AddItemActivity.this, "Produtos adicionados!", Toast.LENGTH_SHORT).show();
-//                ListaProdutos lista = helper.listaProdutos();
+
+                Produto produto = helper.getProduto();
+                ProdutoDAO dao = new ProdutoDAO(this);
+                dao.insert(produto);
+                dao.close();
+
+                Toast.makeText(AddProdutoActivity.this, produto.getQuantidade() + " Unidade(s) de " + produto.getProduto().toUpperCase() +" adicionado(s) a lista!", Toast.LENGTH_SHORT).show();
                 finish();
                 break;
         }
 
         return super.onOptionsItemSelected(item);
     }
+
 }
